@@ -35,15 +35,22 @@ if ingredients_list:
 
         ingredients_string += fruit_chosen + " "
 
-        # Título para cada fruta
         st.subheader(fruit_chosen + " Nutrition Information")
 
-        # Llamada a la API
+        # Obtener el valor SEARCH_ON
+        search_on = session.table(
+            "smoothies.public.fruit_options"
+        ).filter(
+            col("FRUIT_NAME") == fruit_chosen
+        ).select(
+            col("SEARCH_ON")
+        ).collect()[0]["SEARCH_ON"]
+
+        # Llamar a la API usando SEARCH_ON
         smoothiefroot_response = requests.get(
-            "https://my.smoothiefroot.com/api/fruit/" + fruit_chosen
+            "https://my.smoothiefroot.com/api/fruit/" + search_on
         )
 
-        # Mostrar resultado
         st.dataframe(
             data=smoothiefroot_response.json(),
             use_container_width=True
